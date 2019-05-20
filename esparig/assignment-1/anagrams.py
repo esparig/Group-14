@@ -1,6 +1,4 @@
 import collections
-from jedi.settings import case_insensitive_completion
-from numba import lowering
 
 def anagrams0(str1, str2):
 

@@ -1,10 +1,6 @@
 import collections
 
-def anagrams0(str1, str2):
-
-    return (sum(collections.Counter(str1).values()) - sum(collections.Counter(str2).values())) == 0
-
-def anagrams1(str1, str2):
+def anagrams_case_sensitive(str1: str, str2: str) -> bool:
     a = collections.Counter(str1)
     for c in str2:
         a[c] -= 1
@@ -12,14 +8,9 @@ def anagrams1(str1, str2):
             return False
     return sum(a.values()) == 0
 
-def anagrams2(str1, str2, case_insensitive=False):
-    if case_insensitive == True:
-        str1 = str1.lower()
-        str2 = str2.lower()
-
-    a = collections.Counter(str1)
-    for c in str2:
-        a[c] -= 1
-        if a[c] < 0:
-            return False
-    return sum(a.values()) == 0
+def anagrams(str1: str, str2: str, case_insensitive: bool=False) -> bool:
+    if case_insensitive:
+        return anagrams_case_sensitive(str1.lower(), str2.lower())
+    else:
+        return anagrams_case_sensitive(str1, str2)
+    

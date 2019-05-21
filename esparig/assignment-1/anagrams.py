@@ -13,10 +13,19 @@ def anagrams_case_sensitive(str1: str, str2: str) -> bool:
 
 def anagrams(str1: str, str2: str, case_insensitive: bool = False,
              is_sentence: bool = False, corresponding_words: bool = False) -> bool:
-    """Fuction to analyze if two strings are anagrams considering case sensitivity and sentences"""
+    """Function to analyze if two strings are anagrams considering case sensitivity and sentences"""
     if is_sentence:
         if corresponding_words:
-            pass #TO DO
+            list_str1, list_str2 = str1.split(), str2.split()
+            if len(list_str1) != len(list_str2):
+                return False
+            if case_insensitive:
+                list_str1 = [s.lower() for s in list_str1]
+                list_str2 = [s.lower() for s in list_str2]
+            for i in range(len(list_str1)):
+                if not anagrams_case_sensitive(list_str1[i].lower(), list_str2[i].lower()):
+                    return False
+            return True
         else:
             str1 = ''.join([i for i in str1 if i.isalnum()])
             str2 = ''.join([i for i in str2 if i.isalnum()])

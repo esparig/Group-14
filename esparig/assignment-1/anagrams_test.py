@@ -22,3 +22,10 @@ class TestAnagrams(unittest.TestCase):
         """Tests for sentences"""
         self.assertTrue(anagrams("So dark the con of man", "Madonna of the Rocks",
                                  case_insensitive=True, is_sentence=True))
+        self.assertFalse(anagrams("So dark the con of man", "Madonna of the Rocks",
+                                  case_insensitive=False, is_sentence=True))
+        self.assertFalse(anagrams("So dark the con of man", "Madonna of the Rocks",
+                                  case_insensitive=True,
+                                  is_sentence=True, corresponding_words=True))
+        self.assertTrue(anagrams("Elvis cried", "Lives cider",
+                                 case_insensitive=True, is_sentence=True, corresponding_words=True))

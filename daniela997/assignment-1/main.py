@@ -1,6 +1,6 @@
 import sys
 
-from anagramchecker import AnagramChecker
+from anagramchecker_extended import AnagramChecker
 
 
 def main(args):

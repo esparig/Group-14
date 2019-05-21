@@ -8,6 +8,7 @@ class AnagramChecker(object):
     Anagram sequences can be single words or whole sentences; white space
     and punctuation is ignored.
     """
+
     def __init__(self, is_case_sensitive=None, word_order_matters=None):
         """Creates an anagram checker. It uses a hash table to perform checks.
 

@@ -9,6 +9,7 @@ class AnagramChecker(object):
     and inputs should be single words made up of
     alphabetical characters.
     """
+
     def __init__(self):
         """Creates an anagram checker.
         """

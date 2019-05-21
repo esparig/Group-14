@@ -4,6 +4,7 @@ from anagramchecker_extended import AnagramChecker
 
 
 class AnagramCheckerTest(unittest.TestCase):
+    """Tests extended functionality from additional challenges."""
     def test_baseline_functionality(self):
         anagram_checker = AnagramChecker()
         self.assertTrue(anagram_checker.check_anagrams("stressed", "desserts"))

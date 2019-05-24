@@ -1,34 +1,36 @@
 """First assignment: Anagrams"""
 from collections import Counter
+from typing import List
 
-def anagrams_case_sensitive(str1: str, str2: str) -> bool:
+def compare(str1: str, str2: str) -> bool:
     """Function to analyze if two strings are anagrams"""
-    dict1 = Counter(str1)
-    for char in str2:
-        dict1[char] -= 1
-        if dict1[char] < 0:
+    if len(str1) != len(str2):
+        return False
+    return Counter(str1) == Counter(str2)
+
+def compare_list(str1: List[str], str2: List[str]) -> bool:
+    """Function to analyze if two lists contains corresponding anagrams"""
+    if len(str1) != len(str2):
+        return False
+    for word1, word2 in zip(str1, str2):
+        if not compare(word1, word2):
             return False
-    return sum(dict1.values()) == 0
+    return True
 
-
-def anagrams(str1: str, str2: str, case_insensitive: bool = False,
-             is_sentence: bool = False, corresponding_words: bool = False) -> bool:
-    """Function to analyze if two strings are anagrams considering case sensitivity and sentences"""
+def normalize(string: str, case_sensitive: bool, is_sentence: bool,
+              corresponding_words: bool) -> List[str]:
+    """Function to normalize string according to options"""
+    if not case_sensitive:
+        string = string.lower()
     if is_sentence:
         if corresponding_words:
-            list_str1, list_str2 = str1.split(), str2.split()
-            if len(list_str1) != len(list_str2):
-                return False
-            if case_insensitive:
-                list_str1 = [s.lower() for s in list_str1]
-                list_str2 = [s.lower() for s in list_str2]
-            for i in range(len(list_str1)):
-                if not anagrams_case_sensitive(list_str1[i].lower(), list_str2[i].lower()):
-                    return False
-            return True
-        else:
-            str1 = ''.join([i for i in str1 if i.isalnum()])
-            str2 = ''.join([i for i in str2 if i.isalnum()])
-    if case_insensitive:
-        return anagrams_case_sensitive(str1.lower(), str2.lower())
-    return anagrams_case_sensitive(str1, str2)
+            string = string.split()
+            return string
+        string = ''.join([i for i in string if i.isalnum()])
+    return [string]
+
+def anagrams(str1: str, str2: str, case_sensitive: bool = True,
+             is_sentence: bool = False, corresponding_words: bool = False) -> bool:
+    """Function to analyze if two strings are anagrams considering case sensitivity and sentences"""
+    return compare_list(normalize(str1, case_sensitive, is_sentence, corresponding_words),
+                        normalize(str2, case_sensitive, is_sentence, corresponding_words))

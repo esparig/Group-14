@@ -11,21 +11,21 @@ class TestAnagrams(unittest.TestCase):
         self.assertTrue(anagrams("silent", "listen"))
         self.assertFalse(anagrams("silent", "listennn"))
         self.assertFalse(anagrams("silentt", "listen"))
-        self.assertFalse(anagrams("Silent", "listen", case_insensitive=False))
+        self.assertFalse(anagrams("Silent", "listen", case_sensitive=True))
 
     def test_case_insensitive(self):
         """Tests for case insensitive strings"""
-        self.assertTrue(anagrams("Silent", "listen", case_insensitive=True))
-        self.assertFalse(anagrams("silent", "listennn", case_insensitive=True))
+        self.assertTrue(anagrams("Silent", "listen", case_sensitive=False))
+        self.assertFalse(anagrams("silent", "listennn", case_sensitive=False))
 
     def test_case_sentences(self):
         """Tests for sentences"""
         self.assertTrue(anagrams("So dark the con of man", "Madonna of the Rocks",
-                                 case_insensitive=True, is_sentence=True))
+                                 case_sensitive=False, is_sentence=True))
         self.assertFalse(anagrams("So dark the con of man", "Madonna of the Rocks",
-                                  case_insensitive=False, is_sentence=True))
+                                  case_sensitive=True, is_sentence=True))
         self.assertFalse(anagrams("So dark the con of man", "Madonna of the Rocks",
-                                  case_insensitive=True,
+                                  case_sensitive=False,
                                   is_sentence=True, corresponding_words=True))
         self.assertTrue(anagrams("Elvis cried", "Lives cider",
-                                 case_insensitive=True, is_sentence=True, corresponding_words=True))
+                                 case_sensitive=False, is_sentence=True, corresponding_words=True))

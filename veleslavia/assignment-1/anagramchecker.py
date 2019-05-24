@@ -1,5 +1,5 @@
 """This module defines a class which checks if two strings are anagrams."""
-from typing import Tuple, Union, List, overload
+from typing import Union, List, overload
 import re
 
 
@@ -24,34 +24,25 @@ def is_anagram(sequence1, sequence2):
         return True
 
 
-class AnagramChecker(object):
-
-    def __init__(self, case_sensitive: bool, each_word_in_sentence: bool) -> None:
-        """
-
-        :param case_sensitive: ignores case differences between words if False
-        :param each_word_in_sentence: checks that each word in the first sentence is an anagram
-                                    of the corresponding word in the second sentence
-        """
-        self.case_sensitive = case_sensitive
-        self.each_word_in_sentence = each_word_in_sentence
-
-    def preprocess(self, sequence1: str, sequence2: str) -> Union[Tuple[str, str], Tuple[List[str], List[str]]]:
-        """Cleans input strings and splits the sentence to words if necessary.
+def clean_sentence(sentence: str, each_word_in_sentence: bool) -> Union[str, List[str]]:
+    """ Cleans input strings and splits the sentence to words if necessary.
         Doesn't remove numbers but removes special characters
-        """
-        if not self.case_sensitive:
-            sequence1 = sequence1.lower()
-            sequence2 = sequence2.lower()
+    :param sentence: sentence to be processed
+    :param each_word_in_sentence: checks that each word in the first sentence is an anagram
+                                of the corresponding word in the second sentence
+    :return: sentence without spaces and punctuation or list of words
+    """
+    if each_word_in_sentence:
+        sentence = re.sub('\W+', ' ', sentence).split()
+    else:
+        sentence = re.sub('\W+', '', sentence)
+    return sentence
 
-        if self.each_word_in_sentence:
-            sequence1 = re.sub('\W+', ' ', sequence1).split()
-            sequence2 = re.sub('\W+', ' ', sequence2).split()
-        else:
-            sequence1 = re.sub('\W+', '', sequence1)
-            sequence2 = re.sub('\W+', '', sequence2)
-        return sequence1, sequence2
 
-    def check(self, sequence1, sequence2):
-        sequence1, sequence2 = self.preprocess(sequence1, sequence2)
-        return is_anagram(sequence1, sequence2)
+def preprocess(sequence: str, case_insensitive: bool, each_word_in_sentence: bool) -> Union[str, List[str]]:
+    """ Makes anagram case insensitive if need and cleans sentence
+    """
+
+    if case_insensitive:
+        sequence = sequence.lower()
+    return clean_sentence(sequence, each_word_in_sentence)

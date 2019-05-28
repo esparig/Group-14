@@ -1,30 +1,36 @@
 """This module defines a class which checks if two strings are anagrams."""
-from typing import Union, List, overload
+from collections import Counter
+from functools import singledispatch
 import re
 
 
-@overload
-def is_anagram(sequence1: List[str], sequence2: List[str]) -> bool: ...
-@overload
-def is_anagram(sequence1: str, sequence2: str) -> bool: ...
-
-
+@singledispatch
 def is_anagram(sequence1, sequence2):
-    """Two basic strings are anagrams if their sorted list representations contain exactly the same elements.
-     Two sequences of words are anagrams if all the corresponding words are anagrams"""
+    print(f"Can't compare {sequence1} and {sequence2}")
+
+
+@is_anagram.register
+def _(sequence1: str, sequence2: str) -> bool:
+    """Two basic strings are anagrams if they have the same amount of the same unique characters.
+    """
     if len(sequence1) != len(sequence2):
         return False
-
-    if (type(sequence1) == str) and (type(sequence2) == str):
-        return sorted(sequence1) == sorted(sequence2)
-    elif (type(sequence1) == list) and (type(sequence2) == list):
-        for sq1_word, sq2_word in zip(sequence1, sequence2):
-            if not is_anagram(sq1_word, sq2_word):
-                return False
-        return True
+    return Counter(sequence1) == Counter(sequence2)
 
 
-def clean_sentence(sentence: str, each_word_in_sentence: bool) -> Union[str, List[str]]:
+@is_anagram.register
+def _(sequence1: list, sequence2: list) -> bool:
+    """Two sentences are anagram if each corresponding pair of words is an anagram.
+    """
+    if len(sequence1) != len(sequence2):
+        return False
+    for sq1_word, sq2_word in zip(sequence1, sequence2):
+        if not is_anagram(sq1_word, sq2_word):
+            return False
+    return True
+
+
+def clean_sentence(sentence: str, each_word_in_sentence: bool):
     """ Cleans input strings and splits the sentence to words if necessary.
         Doesn't remove numbers but removes special characters
     :param sentence: sentence to be processed
@@ -39,7 +45,7 @@ def clean_sentence(sentence: str, each_word_in_sentence: bool) -> Union[str, Lis
     return sentence
 
 
-def preprocess(sequence: str, case_insensitive: bool, each_word_in_sentence: bool) -> Union[str, List[str]]:
+def preprocess(sequence: str, case_insensitive: bool, each_word_in_sentence: bool):
     """ Makes anagram case insensitive if need and cleans sentence
     """
 

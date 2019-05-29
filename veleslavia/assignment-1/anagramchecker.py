@@ -6,7 +6,9 @@ import re
 
 @singledispatch
 def is_anagram(sequence1, sequence2):
-    print(f"Can't compare {sequence1} and {sequence2}")
+    """Returns True if the two sequences are anagrams.
+    """
+    raise NotImplemented
 
 
 @is_anagram.register
@@ -24,10 +26,7 @@ def _(sequence1: list, sequence2: list) -> bool:
     """
     if len(sequence1) != len(sequence2):
         return False
-    for sq1_word, sq2_word in zip(sequence1, sequence2):
-        if not is_anagram(sq1_word, sq2_word):
-            return False
-    return True
+    return all(is_anagram(w1, w2) for w1, w2 in zip(sequence1, sequence2))
 
 
 def clean_sentence(sentence: str, each_word_in_sentence: bool):

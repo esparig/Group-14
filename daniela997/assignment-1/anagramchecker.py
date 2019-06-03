@@ -1,6 +1,6 @@
 """This module defines an Anagram checker implementation."""
 import string
-
+from collections import Counter
 
 class AnagramChecker(object):
     """Anagram checker with basic functionality.
@@ -22,26 +22,13 @@ class AnagramChecker(object):
             # If length is not the same return false
             return False
         else:
+            # Assumes case doesn't matter by default
             return self.compare_words(sequence1.lower(), sequence2.lower())
 
     def compare_words(self, word1, word2):
         """Compares two words to check if they are
         made up of the same multiset of characters
-        using a dictionary of counters for every
-        letter in the alphabet.
+        using collections.Counter() to count the
+        occurrences of each character in the sequences
         """
-        for character in word1:
-            if character in self.table:
-                self.table[character] += 1
-            else:
-                raise Exception("Words to compare should only be made up of alphabetical characters.")
-
-        for character in word2:
-            if character in self.table:
-                self.table[character] -= 1
-                if self.table[character] < 0:
-                    # If counter is negative we can be sure words are not anagrams.
-                    return False
-            else:
-                raise Exception("Words to compare should only be made up of alphabetical characters.")
-        return all(count == 0 for count in self.table.values())
+        return Counter(word1) == Counter(word2)

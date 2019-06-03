@@ -1,5 +1,4 @@
 """This module defines an Anagram checker implementation."""
-import string
 from collections import Counter
 
 class AnagramChecker(object):
@@ -13,7 +12,6 @@ class AnagramChecker(object):
     def __init__(self):
         """Creates an anagram checker.
         """
-        self.table = dict.fromkeys(string.ascii_lowercase, 0)
 
     def check_anagrams(self, sequence1, sequence2):
         """Checks two sequences are anagrams.

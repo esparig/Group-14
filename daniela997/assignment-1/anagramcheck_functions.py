@@ -4,6 +4,10 @@ from collections import Counter
 
 def check_anagrams(sequence1, sequence2, is_case_sensitive=False, word_order_matters=False):
     """Checks two sequences are anagrams.
+    Assumes checks are not case sensitive
+    and word order does not matter
+    in the case of sentence-anagrams
+    by default.
     """
     if not is_case_sensitive:
         # If case does not matter convert to lowercase before check.

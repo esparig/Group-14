@@ -1,5 +1,6 @@
 """This module defines an Anagram checker implementation."""
-import string
+import re
+from collections import Counter
 
 
 class AnagramChecker(object):
@@ -18,13 +19,8 @@ class AnagramChecker(object):
         """
         if is_case_sensitive is None:
             self.is_case_sensitive = False
-            self.table = dict.fromkeys(string.ascii_lowercase, 0)
         else:
             self.is_case_sensitive = is_case_sensitive
-            if is_case_sensitive:
-                self.table = dict.fromkeys(string.ascii_letters, 0)
-            else:
-                self.table = dict.fromkeys(string.ascii_lowercase, 0)
 
         if word_order_matters is None:
             self.word_order_matters = False
@@ -49,29 +45,24 @@ class AnagramChecker(object):
 
             for word1, word2 in zip(sequence1, sequence2):
                 # Perform check for each pair of words.
-                anagram_pair = self.compare_words(word1, word2)
-
-                self.table = self.table.fromkeys(self.table, 0)
+                anagram_pair = self.compare_words(self.cleanup(word1), self.cleanup(word2))
 
                 if not anagram_pair:
                     return False
             return True
         else:
-            return self.compare_words(sequence1, sequence2)
+            return self.compare_words(self.cleanup(sequence1), self.cleanup(sequence2))
 
     def compare_words(self, word1, word2):
         """Compares two words to check if they are
         made up of the same multiset of characters
-        using a dictionary of counters for every
-        letter in the alphabet.
+        using collections.Counter() to count
+        character occurrences.
         """
-        for character in word1:
-            if character in self.table:
-                self.table[character] += 1
+        return Counter(word1) == Counter(word2)
 
-        for character in word2:
-            if character in self.table:
-                self.table[character] -= 1
-                if self.table[character] < 0:
-                    return False
-        return all(count == 0 for count in self.table.values())
+    def cleanup(self, sequence):
+        """Cleans up character sequences, leaving only
+        letters and numbers using regex.
+        """
+        return re.sub('[^A-Za-z0-9]+', '', sequence)

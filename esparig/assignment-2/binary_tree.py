@@ -1,7 +1,7 @@
 """
 Assignment 2: Ancestors.
 """
-from typing import List
+from typing import List, Iterator
 
 
 class BinaryTreeNode:
@@ -9,115 +9,63 @@ class BinaryTreeNode:
     Class Binary Tree Node.
     """
 
-    def __init__(self, data: int = None, parent: 'BinaryTreeNode' = None,
-                 left: 'BinaryTreeNode' = None, right: 'BinaryTreeNode' = None) -> None:
+    def __init__(self, data: int=None, parent: 'BinaryTreeNode'=None,
+                 left: 'BinaryTreeNode'=None, right: 'BinaryTreeNode'=None) -> None:
         self.data = data
         self.parent = parent
         self.left = left
         self.right = right
 
-    def insert_node(self, parent: 'BinaryTreeNode', key: int, is_left: bool) -> None:
+    def find_node(self, key: int) -> 'BinaryTreeNode':
+        """Find a node: given a tree and a key, returns a reference
+        to the node conaining the given key.
         """
-        Insert node as left child.
-        """
-        if is_left:
-            self.left = BinaryTreeNode(data=key, parent=parent)
-        else:
-            self.right = BinaryTreeNode(data=key, parent=parent)
-
-    def print_node(self) -> None:
-        """
-        Print node info.
-        """
-        if self.parent:
-            parent_data = self.parent.data
-        else:
-            parent_data = None
+        if self.data == key:
+            return self
 
         if self.left:
-            left_data = self.left.data
-        else:
-            left_data = None
+            node_found = self.left.find_node(key)
+            if node_found:
+                return node_found
 
         if self.right:
-            right_data = self.right.data
-        else:
-            right_data = None
+            node_found = self.right.find_node(key)
+            if node_found:
+                return node_found
 
-        print('Data: {}, Parent: {}, Left: {}, Right: {}'.format(self.data, parent_data,
-                                                                 left_data, right_data))
+        if self.parent:
+            return None
 
+        raise KeyError("The key is not in this tree.")
 
-class BinaryTree:
+    def ancestors(self) -> Iterator['BinaryTreeNode']:
+        """Returns all ancestor of a given node.
+        """
+        node = self
+        while node:
+            yield node.data
+            node = node.parent
+
+def get_ancestors(tree: BinaryTreeNode, key: int) -> List[int]:
+    """Returns a list of all ancestors of a node containing the given key
+    in the given tree (including itself) as decribed in the assignment.
     """
-    Class Binary Tree.
+    return list(tree.find_node(key).ancestors())
+
+def _len_iterable(iterable: Iterator) -> int:
+    """Returns the length of an interator without having to converting to a list.
     """
+    return sum(1 for _ in iterable)
 
-    def __init__(self, head: BinaryTreeNode = None) -> None:
-        self.head = head
-
-
-def tree_as_in_order_list(tree: BinaryTreeNode, result: List[int]) -> None:
+def common_ancestor(node1: BinaryTreeNode, node2: BinaryTreeNode) -> BinaryTreeNode:
+    """Returns the common ancestor node of two given nodes.
     """
-    Print a tree in order from its head.
-    """
-    if tree is not None:
-        tree_as_in_order_list(tree.left, result)
-        result.append(tree.data)
-        tree_as_in_order_list(tree.right, result)
-
-
-def create_tree_from_list_helper(values: List[int], root: BinaryTreeNode, parent: BinaryTreeNode,
-                                 i: int, length: int) -> BinaryTreeNode:
-    """
-    Helper function to create a tree from a list of values.
-    """
-    if i < length:
-        if values[i] is not None:
-            root = BinaryTreeNode(data=values[i], parent=parent)
-            root.left = create_tree_from_list_helper(values, root.left, root, 2 * i + 1, length)
-            root.right = create_tree_from_list_helper(values, root.right, root, 2 * i + 2, length)
-
-    return root
-
-
-def create_tree_from_list(values: List[int]) -> BinaryTree:
-    """
-    Create a tree from a list of values. None value means that there is not a node in that position.
-    """
-    return BinaryTree(head=create_tree_from_list_helper(values, None, None, 0, len(values)))
-
-
-def get_node_helper(node: BinaryTreeNode, key: int) -> BinaryTreeNode:
-    """
-    Helper function to find a node.
-    """
-    if node.data == key:
-        return node
-    if node.left:
-        found = get_node_helper(node.left, key)
-        if found:
-            return found
-    if node.right:
-        found = get_node_helper(node.right, key)
-        if found:
-            return found
-
-
-def get_node(tree: BinaryTree, key: int) -> BinaryTreeNode:
-    """
-    Find a node from the head of a tree.
-    """
-    return get_node_helper(tree.head, key)
-
-
-def get_ancestors(tree: BinaryTree, key: int) -> List[int]:
-    """
-    Find the ancestors of a node.
-    """
-    ancestors = []
-    node = get_node_helper(tree.head, key)
-    while not node.parent:
-        ancestors.append(node) # the node itself is an ancestor
-        node = node.parent
-    return ancestors
+    depth1, depth2 = _len_iterable(node1.ancestors()), _len_iterable(node2.ancestors())
+    node_up, node_stay = (node1, node2) if depth1 > depth2 else (node2, node1)
+    for _ in range(abs(depth1-depth2)):
+        node_up = node_up.parent
+    while node_up != node_stay:
+        node_up, node_stay = node_up.parent, node_stay.parent
+    if node_up:
+        return node_up
+    raise Exception("The nodes doesn't share a common ancestor.")

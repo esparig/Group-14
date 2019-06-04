@@ -10,43 +10,45 @@ class BinaryTree:
 
         return '(Key:{}, Left child:{}, Right child:{})'.format(self.key, left, right)
 
-    def get_left(self):
-        return self.left
-
-    def get_right(self):
-        return self.right
-
-    def get_key(self):
-        return self.key
-
-    def set_left(self, left_key):
-        if self.left is None:
-            self.left = BinaryTree(left_key)
-        else:
-            self.left.set_left(left_key)
-
-    def set_right(self, right_key):
-        if self.right is None:
-            self.right = BinaryTree(right_key)
-        else:
-            self.right.set_right(right_key)
-
     def depth_first_traversal(self):
+        yield self
         if self.left is not None:
             for left in self.left.depth_first_traversal():
                 yield left
-        yield self.key
         if self.right is not None:
             for right in self.right.depth_first_traversal():
                 yield right
 
+    def breadth_first_traversal(self):
+        to_visit = [self]
+        while to_visit:
+            current = to_visit.pop(0)
+            yield current
+            if current.left is not None:
+                to_visit.append(current.left)
+            if current.right is not None:
+                to_visit.append(current.right)
+
+    def append_node(self, new_node_key):
+        for parent in self.breadth_first_traversal():
+            if parent.left is None:
+                parent.left = BinaryTree(new_node_key)
+                break
+            elif parent.right is None:
+                parent.right = BinaryTree(new_node_key)
+                break
+
 
 def test():
     tree = BinaryTree("A")
-    tree.set_left("B")
-    tree.set_right("C")
-    tree.set_left("D")
-    print(list(tree.depth_first_traversal()))
+    tree.append_node("B")
+    tree.append_node("C")
+    tree.append_node("D")
+    tree.append_node("E")
+    print([node.key for node in tree.breadth_first_traversal()])
+    print([node.key for node in tree.depth_first_traversal()])
+
+
 
 
 test()

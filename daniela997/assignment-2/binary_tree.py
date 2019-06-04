@@ -30,13 +30,14 @@ class BinaryTree:
                 to_visit.append(current.right)
 
     def append_node(self, new_node_key):
-        for parent in self.breadth_first_traversal():
-            if parent.left is None:
-                parent.left = BinaryTree(new_node_key)
-                break
-            elif parent.right is None:
-                parent.right = BinaryTree(new_node_key)
-                break
+        if new_node_key not in [node.key for node in self.breadth_first_traversal()]:
+            for parent in self.breadth_first_traversal():
+                if parent.left is None:
+                    parent.left = BinaryTree(new_node_key)
+                    break
+                elif parent.right is None:
+                    parent.right = BinaryTree(new_node_key)
+                    break
 
 
 def test():
@@ -45,10 +46,10 @@ def test():
     tree.append_node("C")
     tree.append_node("D")
     tree.append_node("E")
+    tree.append_node("E")
+
     print([node.key for node in tree.breadth_first_traversal()])
     print([node.key for node in tree.depth_first_traversal()])
-
-
 
 
 test()

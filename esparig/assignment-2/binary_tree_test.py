@@ -3,7 +3,7 @@ import unittest
 from typing import List
 from binary_tree import BinaryTreeNode, get_ancestors, common_ancestor
 
-class TestAnagrams(unittest.TestCase):
+class TestBinaryTree(unittest.TestCase):
     """Unit Test Class for Binary Tree.
     """
 

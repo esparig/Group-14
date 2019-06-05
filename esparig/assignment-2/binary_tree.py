@@ -22,21 +22,17 @@ class BinaryTreeNode:
         """
         if self.data == key:
             return self
-
-        if self.left:
-            node_found = self.left.find_node(key)
-            if node_found:
-                return node_found
-
-        if self.right:
-            node_found = self.right.find_node(key)
-            if node_found:
-                return node_found
-
+        
+        for sub in self.left, self.right:
+            if sub:
+                found = sub.find_node(key)
+                if found:
+                    return found
+        
         if self.parent:
             return None
-
-        raise KeyError("The key is not in this tree.")
+            
+        raise KeyError(f"key '{key}' was not found in the tree")
 
     def ancestors(self) -> Iterator['BinaryTreeNode']:
         """Returns all ancestor of a given node.

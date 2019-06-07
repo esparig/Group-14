@@ -1,17 +1,24 @@
+from collections import deque
+
+
 class BinaryTree:
     """Binary tree object. Assumes that there are no specific requirements
     for it to be a binary *search* tree or have any other fancy properties.
     Each single node can be seen as a subtree of its parent, if such exists.
     """
 
-    def __init__(self, key):
+    def __init__(self, *args):
         """Creates a new node which is the root of the current tree.
 
-        :param key: the key held by each node used to identify it.
+        :param args: the keys held by each node used to identify it.
         """
-        self.key = key
+        self.key = args[0]
         self.left = None
         self.right = None
+
+        # If more than 1 key is provided create those nodes and attach them
+        for arg in args[1:]:
+            self.append_node(arg)
 
     def __repr__(self):
         """Prints out a textual representation of a BT node, along with
@@ -22,33 +29,39 @@ class BinaryTree:
         left = None if self.left is None else self.left.key
         right = None if self.right is None else self.right.key
 
-        return '(Key: {}, Left child: {}, Right child: {})'.format(self.key, left, right)
+        return f'(Key: {self.key}, Left child: {left}, Right child: {right})'
+
+    def __iter__(self):
+        """
+        Map DFT to iter class method.
+        :return: iterator over the BT nodes
+        """
+        return self.depth_first_traversal()
 
     def depth_first_traversal(self):
         """Does pre-order depth-first traversal of the subtree
         to which the current node is a root. Recursive.
         This is used as helper when finding for a node in the tree,
         or when searching for ancestors.
-        :return: iterable containing BT nodes in depth-first order.
+        :return: iterator containing BT nodes in depth-first order.
         """
         yield self
         if self.left is not None:
-            for left in self.left.depth_first_traversal():
-                yield left
+            yield from self.left.depth_first_traversal()
         if self.right is not None:
-            for right in self.right.depth_first_traversal():
-                yield right
+            yield from self.right.depth_first_traversal()
 
     def breadth_first_traversal(self):
         """Does breadth-first traversal of the subtree
         to which the current node is a root. Uses a stack to keep track
         of nodes to visit.
         This is used as helper when adding new nodes to the tree.
-        :return: iterable containing BT nodes in breadth-first order.
+        :return: iterator containing BT nodes in breadth-first order.
         """
-        to_visit = [self]
+        to_visit = deque([self])
+        # Use doubly linked list to pop 0th element in constant time
         while to_visit:
-            current = to_visit.pop(0)
+            current = to_visit.popleft()
             yield current
             if current.left is not None:
                 to_visit.append(current.left)
@@ -61,7 +74,7 @@ class BinaryTree:
         to find a "childless" parent. Assumes node keys are unique.
         :param new_node_key: key value for new node to be added.
         """
-        if new_node_key not in {node.key for node in self.breadth_first_traversal()}:
+        if new_node_key not in {node.key for node in self}:
             for parent in self.breadth_first_traversal():
                 if parent.left is None:
                     parent.left = BinaryTree(new_node_key)
@@ -73,26 +86,24 @@ class BinaryTree:
     def find_node(self, search_key):
         """Uses depth-first traversal to find a node with the given key.
         :param search_key: find a node whose key is this value"""
-        for node in self.depth_first_traversal():
+        for node in self:
             if node.key == search_key:
                 return node
-        return None
+        raise KeyError("There exists no node with this key.")
 
     def get_ancestors(self, search_key):
         """Uses depth-first traversal to find ancestors of a node in the tree.
         Recursively returns ancestor nodes from subtrees.
         :param search_key: for a node with this key, find its ancestors
-        :return: iterable with ancestor nodes
+        :return: iterator with ancestor nodes
         """
-        if search_key in [node.key for node in self.depth_first_traversal()] and self.key != search_key:
+        if search_key in [node.key for node in self] and self.key != search_key:
             # Check that the given key is in the current tree; if yes, traverse left and right subtrees
             if self.left is not None and self.left.key != search_key:
-                for left in self.left.get_ancestors(search_key):
-                    yield left
+                yield from self.left.get_ancestors(search_key)
 
             if self.right is not None and self.right.key != search_key:
-                for right in self.right.get_ancestors(search_key):
-                    yield right
+                yield from self.right.get_ancestors(search_key)
 
             yield self
 
@@ -118,4 +129,3 @@ class BinaryTree:
             return self
 
         return left_subtree or right_subtree
-

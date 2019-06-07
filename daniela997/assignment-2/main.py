@@ -5,19 +5,7 @@ from binary_tree import BinaryTree
 
 def main(args):
     # Create tree, add some nodes
-    tree = BinaryTree("A")
-    tree.append_node("B")
-    tree.append_node("C")
-    tree.append_node("D")
-    tree.append_node("E")
-    tree.append_node("E")
-    tree.append_node("F")
-    tree.append_node("G")
-    tree.append_node("H")
-    tree.append_node("I")
-    tree.append_node("J")
-    tree.append_node("K")
-    tree.append_node("L")
+    tree = BinaryTree("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L")
 
     # Traverse
     print([node.key for node in tree.breadth_first_traversal()])

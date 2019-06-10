@@ -48,10 +48,3 @@ class Lexicon:
         return current_node
 
 
-def test():
-    lexicon = Lexicon()
-    lexicon.add_words("CAR", "CAT", "CARD", "FAT")
-    print(lexicon.is_prefix("CAT"))
-
-
-test()

@@ -6,6 +6,17 @@ import klast
 import linkedlist
 
 
+def test():
+  lexicon = Lexicon()
+  lexicon.add_words("CAR", "CAT", "CARD", "CART")
+  grid1 = [["A", "A", "R"], ["T", "C", "D"]]
+  words = list(search_grid(grid1, lexicon))
+  words.reverse()
+  print(words)
+
+
+test()
+
 def main(args):
   list_ = linkedlist.LinkedList(args)
   for node in list_:

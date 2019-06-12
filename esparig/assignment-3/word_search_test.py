@@ -1,65 +1,49 @@
 """Unit tests for Assignment 3"""
 import unittest
-from typing import List
-from word_search import Lexicon, words_from_grid
+from word_search import create_lexicon, traverse_lexicon, words_from_grid
 
+LEXICON = create_lexicon(["CAR", "CARD", "CART", "CAT"])
+GRID = [['A', 'A', 'R'], ['T', 'C', 'D']]
 
 class TestWordSearch(unittest.TestCase):
     """Unit Test Class for Binary Tree.
     """
 
-    def setUp(self):
-
-        def create_lexicon(words: List[str]) -> Lexicon:
-            """Initialize a lexicon.
-            """
-            dummy_head = Lexicon(None, False, [])
-            for word in words:
-                lexicon = dummy_head
-                for char in word:
-                    if not lexicon.next:
-                        elem = Lexicon(char, False, [])
-                        lexicon.next.append(elem)
-                    else:
-                        found = False
-                        for elem in lexicon.next:
-                            if char == elem.chr:
-                                found = True
-                                break
-                        if not found:
-                            elem = Lexicon(char, False, [])
-                            lexicon.next.append(elem)
-                    lexicon = elem
-                lexicon.ends = True
-            return dummy_head
-
-        self.my_lexicon = create_lexicon(["CAR", "CARD", "CART", "CAT"])
-        self.my_grid = [['A', 'A', 'R'], ['T', 'C', 'D']]
+    def test_create_lexicon(self):
+        """Test create_lexicon and traverse_lexicon:
+        - Using words.txt containing 235886 words.
+        """
+        with open("words.txt") as file:
+            list_words = file.read().splitlines()
+        my_lexicon = create_lexicon(list_words)
+        new_list_words = []
+        traverse_lexicon("", my_lexicon, new_list_words)
+        self.assertEqual(list_words.sort(), new_list_words.sort())
 
     def test_is_word(self):
         """Test if a given word is in the lexicon
         """
-        self.assertTrue(self.my_lexicon.is_word("CAR"))
-        self.assertTrue(self.my_lexicon.is_word("CARD"))
-        self.assertTrue(self.my_lexicon.is_word("CART"))
-        self.assertTrue(self.my_lexicon.is_word("CAT"))
+        self.assertTrue(LEXICON.is_word("CAR"))
+        self.assertTrue(LEXICON.is_word("CARD"))
+        self.assertTrue(LEXICON.is_word("CART"))
+        self.assertTrue(LEXICON.is_word("CAT"))
 
-        self.assertFalse(self.my_lexicon.is_word("DOG"))
-        self.assertFalse(self.my_lexicon.is_word("C"))
-        self.assertFalse(self.my_lexicon.is_word("CA"))
-        self.assertFalse(self.my_lexicon.is_word("CASH"))
+        self.assertFalse(LEXICON.is_word("DOG"))
+        self.assertFalse(LEXICON.is_word("C"))
+        self.assertFalse(LEXICON.is_word("CA"))
+        self.assertFalse(LEXICON.is_word("CASH"))
 
     def test_is_prefix(self):
         """Test if a given word is in the lexicon
         """
-        self.assertTrue(self.my_lexicon.is_prefix("C"))
-        self.assertTrue(self.my_lexicon.is_prefix("CA"))
+        self.assertTrue(LEXICON.is_prefix("C"))
+        self.assertTrue(LEXICON.is_prefix("CA"))
 
-        self.assertFalse(self.my_lexicon.is_prefix("DOG"))
-        self.assertFalse(self.my_lexicon.is_prefix("CAT"))
+        self.assertFalse(LEXICON.is_prefix("DOG"))
+        self.assertFalse(LEXICON.is_prefix("CAT"))
 
     def test_words_from_grid(self):
         """Test words from grid.
         """
-        self.assertEqual(words_from_grid(self.my_lexicon, self.my_grid, 2, 3),
+        self.assertEqual(words_from_grid(LEXICON, GRID, 2, 3),
                          set(["CAT", "CAR", "CARD"]))

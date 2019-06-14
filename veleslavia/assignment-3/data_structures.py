@@ -3,13 +3,13 @@ from typing import List, Tuple, Callable
 
 class Lexicon:
 
-    def __init__(self, vocabulary=None):
+    def __init__(self, vocabulary: List[str]) -> None:
         self.vocabulary = vocabulary
 
-    def is_word(self, word):
+    def is_word(self, word: str) -> bool:
         return word in self.vocabulary
 
-    def is_prefix(self, prefix):
+    def is_prefix(self, prefix: str) -> bool:
         """ Returns True if the given prefix is a prefix of at least one word in the lexicon
         """
         return any(prefix == word[:len(prefix)] for word in self.vocabulary)

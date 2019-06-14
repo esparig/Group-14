@@ -39,12 +39,11 @@ class Grid:
         if continue_traverse(prefix):
             yield prefix
             for (incident_i, incident_j) in self.incident(i, j):
-                yield from self.traverse_from(incident_i, incident_j, prefix=prefix, continue_traverse=continue_traverse)
+                yield from self.traverse_from(incident_i, incident_j, prefix, continue_traverse)
                 self.is_visited[incident_i][incident_j] = False
 
     def traverse(self, continue_traverse: Callable[[str], bool] = None):
         for start_row in range(len(self.data)):
             for start_col in range(len(self.data[start_row])):
                 self.is_visited = [[False] * len(self.data[i]) for i in range(len(self.data))]
-                yield from self.traverse_from(start_row, start_col,
-                                              prefix='', continue_traverse=continue_traverse)
+                yield from self.traverse_from(start_row, start_col, continue_traverse=continue_traverse)

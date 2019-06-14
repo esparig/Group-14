@@ -10,7 +10,6 @@ def main():
         filter duplicated words
     """
     lexicon = Lexicon(vocabulary=['CAR', 'CARD', 'CART', 'CAT'])
-    grid = Grid(data=[['A', 'A', 'R'], ['T', 'C', 'D']])
+    grid = Grid(letters=[['A', 'A', 'R'], ['T', 'C', 'D']])
 
-    continue_traverse = lambda prefix: lexicon.is_prefix(prefix)
-    print(set(word for word in grid.traverse(continue_traverse) if lexicon.is_word(word)))
+    print(set(word for word in grid.traverse(continue_traverse=lexicon.is_prefix) if lexicon.is_word(word)))

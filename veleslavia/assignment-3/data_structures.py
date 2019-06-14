@@ -1,4 +1,4 @@
-from typing import List, Tuple, Callable
+from typing import List, Tuple, Callable, Iterable
 
 
 class Lexicon:
@@ -28,7 +28,7 @@ class Grid:
             if 0 <= j <= len(self.data[i]) - 1:
                 return not self.is_visited[i][j]
 
-    def incident(self, i: int, j: int) -> Tuple[int, int]:
+    def valid_incident(self, i: int, j: int) -> Iterable[Tuple[int, int]]:
         for (shift_i, shift_j) in self.incident_shifts:
             if self.is_valid_to_visit(i + shift_i, j + shift_j):
                 yield i + shift_i, j + shift_j
@@ -38,11 +38,11 @@ class Grid:
         prefix += self.data[i][j]
         if continue_traverse(prefix):
             yield prefix
-            for (incident_i, incident_j) in self.incident(i, j):
+            for (incident_i, incident_j) in self.valid_incident(i, j):
                 yield from self.traverse_from(incident_i, incident_j, prefix, continue_traverse)
                 self.is_visited[incident_i][incident_j] = False
 
-    def traverse(self, continue_traverse: Callable[[str], bool] = None):
+    def traverse(self, continue_traverse: Callable[[str], bool] = None) -> Iterable[str]:
         for start_row in range(len(self.data)):
             for start_col in range(len(self.data[start_row])):
                 self.is_visited = [[False] * len(self.data[i]) for i in range(len(self.data))]

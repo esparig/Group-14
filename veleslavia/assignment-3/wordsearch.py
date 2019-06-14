@@ -3,11 +3,13 @@ from data_structures import Grid, Lexicon
 
 def main():
     """
-        for every starting point:
+    Usage sample for words searching in a lexicon.
+    Algorithm:
+        for every starting point in a grid:
             start traversing the grid
-                if path is a prefix:
-                    yield path and continue traversing
-        filter duplicated words
+            if path is a prefix:
+                yield path and continue traversing
+        filter out duplicated words
     """
     lexicon = Lexicon(vocabulary=['CAR', 'CARD', 'CART', 'CAT'])
     grid = Grid(letters=[['A', 'A', 'R'], ['T', 'C', 'D']])

@@ -10,7 +10,6 @@ class LexiconTest(unittest.TestCase):
         self.assertTrue(lexicon.is_word('CAR'))
         self.assertTrue(lexicon.is_prefix('CA'))
         self.assertTrue(lexicon.is_prefix('CAT'))
-        self.assertTrue(lexicon.is_prefix(''))
         self.assertFalse(lexicon.is_prefix('RAC'))
 
 
@@ -22,12 +21,12 @@ class GridTest(unittest.TestCase):
         self.assertFalse(grid.is_valid_to_visit(1, 2))
         self.assertFalse(grid.is_valid_to_visit(-1, 0))
 
-    def test_valid_incident(self):
+    def test_valid_neighbours(self):
         grid = Grid(letters=[['A', 'A', 'R'], ['T', 'C', 'D']])
         grid.is_visited[0][0] = True
         grid.is_visited[0][2] = True
-        valid_incident = set([incident for incident in grid.valid_incident(0, 1)])
-        self.assertEqual(valid_incident, set([(1, 0), (1, 1), (1, 2)]))
+        valid_neighbours = set([neighbour for neighbour in grid.valid_neighbours(0, 1)])
+        self.assertEqual(valid_neighbours, set([(1, 0), (1, 1), (1, 2)]))
 
     def test_traverse_from(self):
         grid = Grid(letters=[['A', 'A', 'R'], ['T', 'C', 'D']])

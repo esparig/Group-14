@@ -5,15 +5,15 @@ import unittest
 from counting_islands import count_islands, count_islands_from_graph_map
 
 
-MAP1 = [["Sea", "Land", "Sea", "Land"], 
+MAP_4_x_4 = [["Sea", "Land", "Sea", "Land"], 
        ["Land", "Land", "Sea", "Sea"],
        ["Sea", "Sea", "Land", "Sea"],
        ["Sea", "Sea", "Land", "Sea"]]
 
-MAP2 = [["Sea", "Sea"],
+MAP_ONLY_SEA = [["Sea", "Sea"],
         ["Sea", "Sea"]]
 
-MAP3 = [["Land", "Land"],
+MAP_ONLY_LAND = [["Land", "Land"],
         ["Land", "Land"]]
 
 TERRITORY = namedtuple('TERRITORY', ['type', 'adjacents'])
@@ -50,19 +50,19 @@ class TestCountingIslands(unittest.TestCase):
     def test_example_map(self):
         """Test a 2D map where each cell represents a type of territory (Sea or Land).
         """
-        num_islands, new_map = count_islands(MAP1)
+        num_islands, new_map = count_islands(MAP_4_x_4)
         self.assertEqual(num_islands, 3, "There are three islands!")
         
     def test_only_sea_map(self):
         """Test a 2D map containing only Sea
         """
-        num_islands, new_map = count_islands(MAP2)
+        num_islands, new_map = count_islands(MAP_ONLY_SEA)
         self.assertEqual(num_islands, 0, "There isn't any island!")
         
     def test_only_land_map(self):
         """Test a 2D map containing only Land
         """
-        num_islands, new_map = count_islands(MAP3)
+        num_islands, new_map = count_islands(MAP_ONLY_LAND)
         self.assertEqual(num_islands, 1, "Maybe we are in a continent!")
     
     def test_graph_map(self):

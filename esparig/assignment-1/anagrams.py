@@ -2,6 +2,7 @@
 from collections import Counter
 from typing import List
 
+
 def compare(str1: str, str2: str) -> bool:
     """Function to analyze if two strings are anagrams"""
     if len(str1) != len(str2):

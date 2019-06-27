@@ -1,7 +1,9 @@
 """Unit tests for Assignment 2"""
-import unittest
 from typing import List
+import unittest
+
 from binary_tree import BinaryTreeNode, get_ancestors, common_ancestor
+
 
 class TestBinaryTree(unittest.TestCase):
     """Unit Test Class for Binary Tree.

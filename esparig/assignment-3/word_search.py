@@ -3,6 +3,7 @@ Assignment 3: Word Search.
 """
 from typing import List, Set
 
+
 class TrieNode:
     """Lexicon: collections of cords stored as a Trie.
     """

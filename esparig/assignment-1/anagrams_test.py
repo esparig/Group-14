@@ -3,6 +3,7 @@ import unittest
 
 from anagrams import anagrams
 
+
 class TestAnagrams(unittest.TestCase):
     """Unit Test Class for Anagrams"""
 

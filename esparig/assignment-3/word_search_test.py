@@ -1,8 +1,6 @@
 """Unit tests for Assignment 3"""
 import unittest
-
 from word_search import create_lexicon, traverse_lexicon, words_from_grid
-
 
 LEXICON = create_lexicon(["CAR", "CARD", "CART", "CAT"])
 GRID = [['A', 'A', 'R'], ['T', 'C', 'D']]

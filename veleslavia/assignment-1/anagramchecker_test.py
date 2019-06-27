@@ -1,5 +1,5 @@
-from functools import partial
 import unittest
+from functools import partial
 
 from anagramchecker import is_anagram, preprocess
 

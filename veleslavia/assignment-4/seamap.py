@@ -1,9 +1,23 @@
+""" This module contains a function count_islands which counts islands
+by recursively visiting connected land areas. That recursive algorithm
+looping over the sea matrix and if we have a land, we should process
+the corresponding island and add +1 to the total number of islands.
+"""
+
 from itertools import product
 from typing import List
 import unittest
 
 
 def process_island(sea_map: List[List[bool]], visited: List[List[bool]], i: int, j: int):
+    """
+    Traverse an island and mark visited lands as 'visited'
+    :param sea_map: original sea map
+    :param visited: boolean map with visited tiles marked as True
+    :param i: x coordinate of a tile in current island
+    :param j: y coordinate of a tile in current island
+    :return:
+    """
     connected_directions = [(0, -1), (0, 1), (1, 0), (-1, 0)]
     visited[i][j] = True
     for (move_i, move_j) in connected_directions:
@@ -20,8 +34,10 @@ def count_islands(sea_map: List[List[bool]]) -> int:
     :return: number of islands in the map
     """
     visited = [[False] * len(row) for row in sea_map]
-    return sum(process_island(sea_map, visited, i, j) for (i, j) in
-               product(range(len(sea_map)), range(len(sea_map[0]))) if sea_map[i][j] and not visited[i][j])
+    return sum(
+        process_island(sea_map, visited, i, j)
+        for (i, j) in product(range(len(sea_map)), range(len(sea_map[0])))
+        if sea_map[i][j] and not visited[i][j])
 
 
 class CountIslandsTest(unittest.TestCase):

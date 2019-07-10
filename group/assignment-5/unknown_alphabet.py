@@ -72,7 +72,8 @@ def topological_sort(adjacency_list: DefaultDict[str, List[str]], vertices: Set[
                 queue.add(adjacent)
     
     if len(result) != len(in_degree):
-        return None
+        raise SyntaxError(f"The graph provided is not a DAG")
+
     else:
         return result
                

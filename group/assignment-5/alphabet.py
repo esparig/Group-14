@@ -1,23 +1,18 @@
-import itertools
 from collections import defaultdict
 
-dictionary = ['ART', 'RAT', 'CAT', 'CAR']
+dictionary = ["ART", "RAT", "CAT", "CAR", "MI"]
 sample_solution = ['A', 'T', 'R', 'C']
 
 
 class AlphabetSkeleton:
-    def __init__(self):
-        self.graph = defaultdict(list)
-
-    def make_graph(self, dictionary):
+    def __init__(self, dictionary):
+        self.graph = defaultdict(list, {letter: [] for letter in set("".join(dictionary))})
         for word1, word2 in zip(dictionary[:-1], dictionary[1:]):
             # find first mismatching character
             # create an edge between mismatching character in word1 and word2
             for letter1, letter2 in zip(word1, word2):
                 if letter1 != letter2:
                     self.graph[letter1].append(letter2)
-                    # make sure that all the letters are in the graph
-                    self.graph[letter2]
                     break
 
     def visit_recursively(self, key, is_visited, sorted_alphabet):
@@ -37,6 +32,5 @@ class AlphabetSkeleton:
         print(sorted_alphabet[::-1])
 
 
-alpha = AlphabetSkeleton()
-alpha.make_graph(dictionary)
+alpha = AlphabetSkeleton(dictionary)
 alpha.toposorted()

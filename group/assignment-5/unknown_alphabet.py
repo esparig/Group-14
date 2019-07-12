@@ -4,7 +4,7 @@ find the alphabet of that Language
 from typing import List, DefaultDict, Set
 from collections import defaultdict
 
-def topological_sort(adjacency_list: DefaultDict[str, List[str]], vertices: Set[str]) -> List[str]:
+def topological_sort(adjacency_list: DefaultDict[str, List[str]]) -> List[str]:
     """Topological sort of a graph using the Kahn's algorithm.
     Inputs:
     a graph as an adjacency list
@@ -14,7 +14,7 @@ def topological_sort(adjacency_list: DefaultDict[str, List[str]], vertices: Set[
     
     # Calculate the input degree for each vertex
     in_degree = {}
-    for v, adjacents in [(vertex, adjacency_list[vertex]) for vertex in vertices]:
+    for v, adjacents in [(vertex, adjacency_list[vertex]) for vertex in adjacency_list.keys()]:
         in_degree.setdefault(v, 0)
         for adj in adjacents:
             in_degree[adj] = in_degree.get(adj, 0) + 1
@@ -44,7 +44,8 @@ def parse_lexicon(lexicon: List[List[str]]) -> DefaultDict[str, List[str]]:
     """Parse lexicon (collection of words in a fictional language)
     into an adjacency list of characters where an edge a -> b indicates that a goes before b
     """
-    adj_list = defaultdict(list)
+    adj_list = defaultdict(list, {letter: [] for letter in set("".join(lexicon))})
+    #set([chr for word in lexicon for chr in word])
 
     for w1, w2 in zip(lexicon[:-1], lexicon[1:]):
         for l1, l2 in zip(w1, w2):
@@ -57,4 +58,4 @@ def parse_lexicon(lexicon: List[List[str]]) -> DefaultDict[str, List[str]]:
 def get_alphabet(lexicon: List[List[str]]) -> List[str]:
     """Obtain the alphabet in lexicographic order of a fictional language
     """
-    return topological_sort(parse_lexicon(lexicon), set([chr for word in lexicon for chr in word]))
+    return topological_sort(parse_lexicon(lexicon))

@@ -2,65 +2,28 @@
 find the alphabet of that Language
 """
 from typing import List, DefaultDict, Set
-from _collections import defaultdict
-
-class Trie:
-    """Lexicon: collections of words stored as a Trie.
-    """
-    def __init__(self, char: str, ends: bool, children: List['Trie']) -> None:
-        self.chr = char
-        self.ends = ends
-        self.children = children
-
-def create_lexicon(words: List[str]) -> Trie:
-    """Initialize a lexicon from a list of words
-    """
-    lexicon = Trie(None, False, [])
-    for word in words:
-        node = lexicon
-        for char in word:
-            if not node.children:
-                elem = Trie(char, False, [])
-                node.children.append(elem)
-            else:
-                found = False
-                for elem in node.children:
-                    if char == elem.chr:
-                        found = True
-                        break
-                if not found:
-                    elem = Trie(char, False, [])
-                    node.children.append(elem)
-            node = elem
-        node.ends = True
-    return lexicon
-
-def get_precedence_rule(prefix: str, node: Trie) -> List[str]:
-    """Traverse the trie getting the relative order of letters:
-    a node of the trie contains its children in the given lexicographic order
-    """
-    if len(node.children) > 0:
-        yield [n.chr for n in node.children]
-    for elem in node.children:
-        yield from get_precedence_rule(prefix+elem.chr, elem)
+from collections import defaultdict
 
 def topological_sort(adjacency_list: DefaultDict[str, List[str]], vertices: Set[str]) -> List[str]:
-    """Topological sort of a graph using the Khan algorithm.
+    """Topological sort of a graph using the Kahn's algorithm.
     Inputs:
     a graph as an adjacency list
     Returns:
     a list containing the topological sort of our graph
     """
+    
+    # Calculate the input degree for each vertex
     in_degree = {}
     for v, adjacents in [(vertex, adjacency_list[vertex]) for vertex in vertices]:
         in_degree.setdefault(v, 0)
         for adj in adjacents:
             in_degree[adj] = in_degree.get(adj, 0) + 1
-            
+    
+    # Enqueue all vertices with input degree 0        
     queue = {v for v, count in in_degree.items() if count == 0}
-
     result = []
     
+    # One by one dequeue vertices and enqueue adjacents if input degree becomes 0 
     while queue:
         v = queue.pop()
         result.append(v)
@@ -71,22 +34,27 @@ def topological_sort(adjacency_list: DefaultDict[str, List[str]], vertices: Set[
             if in_degree[adjacent] == 0:
                 queue.add(adjacent)
     
+    # Check for cycles in the graph
     if len(result) != len(in_degree):
         raise SyntaxError(f"The graph provided is not a DAG")
-
     else:
         return result
-               
-def get_alphabet(lexicon: Trie) -> List[str]:
-    """Obtain the alphabet in lexicographic order of a fictional language
-    - Creates the graph as an adjacency list
-    - Calls the topological sort function
+
+def parse_lexicon(lexicon: List[List[str]]) -> DefaultDict[str, List[str]]:
+    """Parse lexicon (collection of words in a fictional language)
+    into an adjacency list of characters where an edge a -> b indicates that a goes before b
     """
-    adjacency_list = defaultdict(list)
-    vertices = set()
-    for letters in get_precedence_rule("", lexicon):
-        for i, letter in enumerate(letters):
-            vertices.add(letter)
-            if i < len(letters) - 1:
-                adjacency_list[letter].append(letters[i+1])
-    return topological_sort(adjacency_list, vertices)
+    adj_list = defaultdict(list)
+
+    for w1, w2 in zip(lexicon[:-1], lexicon[1:]):
+        for l1, l2 in zip(w1, w2):
+            if l1 != l2:
+                adj_list[l1].append(l2)
+                break
+
+    return adj_list
+
+def get_alphabet(lexicon: List[List[str]]) -> List[str]:
+    """Obtain the alphabet in lexicographic order of a fictional language
+    """
+    return topological_sort(parse_lexicon(lexicon), set([chr for word in lexicon for chr in word]))

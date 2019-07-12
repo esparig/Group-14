@@ -1,10 +1,9 @@
 """Unit tests for Assignment 5"""
 import unittest
-from unknown_alphabet import create_lexicon, get_alphabet
-from pip._vendor.html5lib.filters import alphabeticalattributes
+from unknown_alphabet import get_alphabet
 
-LEXICON = create_lexicon(["ART", "RAT", "CAT", "CAR", "MI"])
-LEXICON_BAD = create_lexicon(["ART", "RAT", "ANT", "CAT", "CAR"])
+LEXICON = ["ART", "RAT", "CAT", "CAR", "MI"]
+LEXICON_BAD = ["ART", "RAT", "ANT", "CAT", "CAR"]
 
 class TestUnknownAlphabet(unittest.TestCase):
     """Unit Test Class for Unkownn Alphabet.

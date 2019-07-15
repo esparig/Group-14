@@ -1,11 +1,11 @@
 """Given a lexicon of all words in lexicographic order of a fictional Language
 find all alphabets of that Language
 """
-from typing import List, Dict, DefaultDict, Tuple, Set
+from typing import List, Dict, DefaultDict, Set
 from collections import defaultdict
 
 
-def parse_lexicon(lexicon: List[List[str]]) -> DefaultDict[str, List[str]]:
+def parse_lexicon(lexicon: List[str]) -> DefaultDict[str, List[str]]:
     """Parse lexicon (collection of words in a fictional language)
     into an adjacency list of characters where an edge a -> b indicates that a goes before b
     """

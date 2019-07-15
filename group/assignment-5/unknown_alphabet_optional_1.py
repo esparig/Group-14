@@ -54,9 +54,5 @@ def topological_sort(adjacency_list: Dict[str, List[str]], in_degree: Dict, resu
 
 
 def get_alphabets(lexicon: List[str]) -> Set[List[str]]:
-    alphabets = set()
     alphabet_components = parse_lexicon(lexicon)
-    for sample_alphabet in topological_sort(alphabet_components, in_degree=None, result=[]):
-        alphabets.add(sample_alphabet)
-
-    return alphabets
+    return {alphabet for alphabet in topological_sort(alphabet_components, in_degree=None, result=[])}

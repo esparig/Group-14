@@ -1,7 +1,7 @@
 """Given a lexicon of all words in lexicographic order of a fictional Language
 find the alphabet of that Language
 """
-from typing import List, Dict
+from typing import List, Dict, Tuple, Set
 from itertools import permutations, product
 
 LEXICON = ["ART", "RAT", "CAT", "CAR", "MIK"]
@@ -84,39 +84,32 @@ def parse_lexicon(lexicon: List[str]) -> DisjointSet:
     return alphabet_components
 
 
-def _toposort(independent_components: List[List[str]], stack=list()) -> List[List[str]]:
+def _toposort(independent_components: Tuple[List[str]], stack: List[str]) -> List[List[str]]:
     # 1. Get zero-degree letter from a component and call _toposort for independent components without that letter
 
     for component in independent_components:
         if component:
             letter = component.pop(0)
             stack.append(letter)
-            print(letter, stack)
             yield from _toposort(independent_components, stack)
             component.insert(0, letter)
-    yield stack
     if stack:
+        if not any(independent_components):
+            yield tuple(stack.copy())
         stack.pop(-1)
 
 
-def get_alphabets(lexicon: List[List[str]]) -> List[List[str]]:
+def get_alphabets(lexicon: List[List[str]]) -> Set[List[str]]:
     """Obtain all alphabets of a fictional language
     1. Get all topo sorts for every component
     2. Make combinations of the results such that every independent component
         could be injected at any position of another component
     """
-    #
-    #
+    alphabets = set()
     alphabet_components = parse_lexicon(lexicon)
     independent_components = [topological_sort(component) for component in alphabet_components]
     for component_sample in product(*independent_components):
-        print(component_sample)
-        _toposort(component_sample)
+        for sample_alphabet in _toposort(component_sample, []):
+            alphabets.add(sample_alphabet)
 
-    print(independent_components)
-
-get_alphabets(LEXICON)
-
-# [ [ ['I']],
-#   [ ['T', 'A', 'R', 'C', 'M'],
-#     ['A', 'T', 'R', 'C', 'M']]]
+    return alphabets

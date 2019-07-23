@@ -32,8 +32,7 @@ class ParkingState(dict):
             for parking_spot, car_id in self.items():
                 if self.inverse[car_id] != end_state.inverse[car_id]:
                     new_state = ParkingState(self.copy())
-                    new_state[parking_spot] = 0
-                    new_state[self.inverse[0]] = car_id
+                    new_state[parking_spot], new_state[self.inverse[0]] = 0, car_id
                     if new_state not in history:
                         print(f"Move car {car_id} from {self.inverse[car_id]} to {self.inverse[0]}")
                         history.append(new_state)

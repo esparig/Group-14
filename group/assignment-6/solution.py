@@ -1,12 +1,20 @@
 """
 Assignment 6: Rearranging cars
+
+Rearrange cars from a state to a end_state.
+
+Assumptions: 
+- Parking spots are labelled using strings
+- Cars are identified by integers
+- The number 0 indicates that there is no car in that spot
 """
 from typing import List
 import unittest
 
 
 class ParkingState(dict):
-    """
+    """Class to define the state of the parking using a dictionary.
+    To access to the location of the cars use the inverse dictionary.
     """
 
     def __init__(self, *args, **kwargs):
@@ -75,6 +83,22 @@ class ParkingState(dict):
                 current_state = new_state
 
         return history
+    
+    def rearrange_get_all(self, end_state, history: List):
+        """Compute all possible combinations of moves to rearrange cars in the end_state order.
+        """
+        if self == end_state:
+            yield history.copy()
+        else:
+            for parking_spot, car_id in self.items():
+                if self.inverse[car_id] != end_state.inverse[car_id]:
+                    new_state = ParkingState(self.copy())
+                    new_state[parking_spot], new_state[self.inverse[0]] = 0, car_id
+                    if new_state not in history:
+                        # print(f"Move car {car_id} from {self.inverse[car_id]} to {self.inverse[0]}")
+                        history.append(new_state)
+                        yield from new_state.rearrange_get_all(end_state, history)
+                        history.pop(-1)
 
 class TestParkingRearrangement(unittest.TestCase):
 
@@ -115,7 +139,16 @@ class TestParkingRearrangement(unittest.TestCase):
         
         print(f"-------------------------------\nEnd test for rearrange_least_moves\n")
 
+    def test_get_all_solutions(self):
+        start_state = ParkingState({'A': 1, 'B': 2, 'C': 0, 'D': 3})
+        end_state = ParkingState({'A': 3, 'B': 1, 'C': 2, 'D': 0})
 
+        movement_history = [i for i in start_state.rearrange_get_all(end_state, list())]
+        num_shortest_solution = sum(1 for i in movement_history if len(i) == 3)
+        num_longest_solution = sum(1 for i in movement_history if len(i) == 16)
+        self.assertEqual(num_shortest_solution, 1)
+        self.assertEqual(num_longest_solution, 2)
+        self.assertEqual(len(movement_history), 180)
 
     def test_restrictions(self):
         restrictions = {'A': [1, 2], 'D': [2, 3]}

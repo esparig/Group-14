@@ -9,6 +9,7 @@ Assumptions:
 from typing import List
 import copy
 import sys
+from collections import OrderedDict
 from itertools import islice
 
 
@@ -44,9 +45,14 @@ class ParkingState(dict):
         self.inverse.__delitem__(self[key])
         super(ParkingState, self).__delitem__(key)
 
+    def __key(self):
+        return tuple((key, self[key]) for key in sorted(self))
+
+    def __hash__(self):
+        return hash(self.__key())
+
     def __repr__(self):
         return "{0}({1})".format(type(self).__name__, super().__repr__())
-    
 
     def move_car(self, car_id: int):
         """
@@ -64,7 +70,7 @@ class ParkingState(dict):
         """
         return self.inverse[lot_id]
 
-    def rearrange_cars_any_path(self, end_state: 'ParkingState', history: List['ParkingState'] = []) \
+    def rearrange_cars_any_path(self, end_state: 'ParkingState', history=OrderedDict()) \
             -> List:
         """
         Rearranges cars from start_state into end_state.
@@ -77,18 +83,18 @@ class ParkingState(dict):
         :return: Returns a sequence of configurations representing a path from start_state to end_state.
 
         """
-        history = history + [copy.deepcopy(self)]
+        history[copy.deepcopy(self)] = True
         while self != end_state:
             # For every car in lot, check that it's not yet in its correct lot and that it can be moved to the empty lot
             for car_id in range(1, len(self)):
                 if self[car_id] != end_state[car_id] and car_id in self.reserved_for[self[0]]:
                     self.move_car(car_id)
                     # append current state to history list
-                    history.append(copy.deepcopy(self))
+                    history[copy.deepcopy(self)] = True
         return history
 
     # shortest
-    def rearrange_cars_shortest_path(self, end_state: 'ParkingState', history: List['ParkingState'] = []) \
+    def rearrange_cars_shortest_path(self, end_state: 'ParkingState', history=OrderedDict()) \
             -> List:
         """
         Rearranges cars from start_state into end_state.
@@ -100,7 +106,7 @@ class ParkingState(dict):
         :param history: a list of past parking lot configurations / states
         :return: Returns the shortest sequence of configurations representing a path from start_state to end_state.
         """
-        history = history + [copy.deepcopy(self)]
+        history[copy.deepcopy(self)] = True
 
         while self != end_state:
             # if the lot that should be empty already is empty, swap it with a random car that needs to be moved
@@ -109,15 +115,15 @@ class ParkingState(dict):
                                car_id in end_state and self[car_id] != end_state[car_id] and car_id in self.reserved_for[self[0]]].pop()
                 self.move_car(car_to_move)
                 # append current state to history list
-                history.append(copy.deepcopy(self))
+                history[copy.deepcopy(self)] = True
             # find the car that needs to go to the empty lot, then move it there
             car_to_move = end_state.find_car_given_lot(self[0])
             self.move_car(car_to_move)
             # append current state to history list
-            history.append(copy.deepcopy(self))
+            history[copy.deepcopy(self)] = True
         return history
 
-    def rearrange_cars_all_paths_distinct_states(self, end_state: 'ParkingState', history: List['ParkingState'] = []) \
+    def rearrange_cars_all_paths_distinct_states(self, end_state: 'ParkingState', history=OrderedDict()) \
             -> List:
         """
         Rearranges cars from start_state into end_state in all possible ways as long as intermediate states in a sequence
@@ -130,7 +136,7 @@ class ParkingState(dict):
         :return: A list of all possible sequences of states between start and end state whereintermediate states in a sequence
         are distinct.
         """
-        history = history + [copy.deepcopy(self)]
+        history[copy.deepcopy(self)] = True
         if self == end_state:
             # If end state is reached return one possible sequence of states
             return [history]
@@ -142,7 +148,7 @@ class ParkingState(dict):
             if self[car_id] != end_state[car_id] and car_id in self.reserved_for[self[0]]:
                 swap_state = copy.deepcopy(self)
                 swap_state.move_car(car_id)
-                if swap_state not in history:
+                if swap_state not in history.keys():
                     branches = swap_state.rearrange_cars_all_paths_distinct_states(end_state, history)
                     for branch in branches:
                         histories.append(branch)
@@ -160,7 +166,7 @@ class ParkingState(dict):
                 break
         return violates
 
-    def path_to_satisfying_end_state(self, history: List['ParkingState'] = []):
+    def path_to_satisfying_end_state(self, history=OrderedDict()):
         """
         Given a set of constraints, return any end state that satisfies them.
         Assumptions:
@@ -169,11 +175,11 @@ class ParkingState(dict):
         :param history: parking lot configurations so far
         :return: Sequence of parking lot configurations leading to a satisfying end state
         """
-        history = history + [copy.deepcopy(self)]
+        history[copy.deepcopy(self)] = True
         while self.violates_constraints(): # Move cars until constrains are no longer violated
             for car_id in range(1, len(self)):
                 self.move_car(car_id)
-                history.append(copy.deepcopy(self))
+                history[copy.deepcopy(self)] = True
         return history
 
     def print_moves(self, sequences: List['ParkingState']):

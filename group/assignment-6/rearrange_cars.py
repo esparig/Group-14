@@ -40,7 +40,7 @@ class ParkingState(dict):
         # Restrictions are the cars not allowed in a certain space i.e.
         # all other cars that are not reserved for this space
         return {lot_id: (set(range(1, len(self))) - set(reserved_for[lot_id])) if lot_id in reserved_for else set()
-                for car_id, lot_id in self.items()}
+                for _, lot_id in self.items()}
 
     def move_car(self, car_id: int):
         """
@@ -236,6 +236,7 @@ class ParkingState(dict):
             raise Exception("There are no move sequences that satisfy there requirements.")
         elif self == path[-1]:
             raise Exception("Start and end state are the same.")
+
 
 def main(args):
     start_state = ParkingState({0: 'C', 1: 'A', 2: 'B', 3: 'D'})

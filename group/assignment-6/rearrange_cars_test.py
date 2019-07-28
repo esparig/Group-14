@@ -8,8 +8,8 @@ Assumptions:
 """
 
 import unittest
-from solution import ParkingState
 from util import window
+from rearrange_cars import ParkingState
 
 
 class TestParkingRearrangement(unittest.TestCase):
@@ -140,10 +140,3 @@ class TestParkingRearrangement(unittest.TestCase):
         state_history = start_state.path_to_satisfying_end_state()
         # State should not be invalid
         self.assertFalse(state_history[-1].violates_constraints())
-
-
-
-
-
-
-
